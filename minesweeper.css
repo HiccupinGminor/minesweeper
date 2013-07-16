@@ -83,6 +83,30 @@ button{
 	color:#6B5B4E;
 	cursor:pointer;
 }
+.timer-outer{
+	border:4px solid #FFF;
+	-webkit-box-shadow: 0 0 3px #93866A;
+	-moz-box-shadow: 0 0 3px #93866A;
+	box-shadow: 0 0 3px #93866A;
+	border-radius:18px;
+	display:inline-block;
+	vertical-align:middle;
+	margin-left:1em;	
+}
+.timer{
+	
+	background-color:#000;
+	color:#FFF;	
+	padding:.8em;
+	font-family:courier, Helvetica, arial, sans-serif;
+	width:70px;
+	height:17px;
+	border:2px solid #666;
+	border-bottom-color:#888;
+	border-top-color:#444;
+	text-align:center;
+	border-radius:18px;
+}
 .intro{
 	background-color: #FFF;
 	padding:2em;
@@ -90,7 +114,12 @@ button{
 	border-right: 2px solid #C1B28D;	
 	-webkit-box-shadow: 0 0 3px #B2A380;
 	-moz-box-shadow: 0 0 3px #B2A380;
-	box-shadow: 0 0 3px #B2A380;	
+	box-shadow: 0 0 3px #B2A380;
+}
+.play-area{
+	width:410px;
+	margin-left:auto;
+	margin-right:auto;
 }
 .controls{
 	margin:.5em auto;

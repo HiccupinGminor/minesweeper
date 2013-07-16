@@ -12,7 +12,7 @@ var Config = {
 	numRows: 8,
 	numCols: 8,
 	numMines: 10,
-	container: $('body')
+	container: $('.play-area')
 };
 
 function Cell(x, y){
@@ -22,6 +22,45 @@ function Cell(x, y){
 	this.isRevealed = false;
 	this.adjMines = 0;
 }
+
+function Timer(container){	
+	this.container = container;
+	this.seconds = 0;
+	this.minutes = 0;
+	this.hours = 0;
+	console.log(this.container);
+}
+
+Timer.prototype.updateTime = function(){
+	this.seconds++;
+	console.log(this.seconds);
+	if(this.seconds == 60){
+		this.seconds = 0;
+		this.minutes++
+	}
+	if(this.minutes == 60){
+		this.minutes = 0;
+		this.hours++; 
+	}
+	this.printTime();
+};
+
+Timer.prototype.printTime = function(){
+	var timeString = this.hours + ":";
+	//Add another zero for format's sake
+	if(this.minutes < 60){
+		timeString += "0";	
+	}
+	timeString += this.minutes + ":";
+
+	if(this.seconds < 10){
+		timeString += "0";	
+	}
+
+	timeString += this.seconds;
+
+	this.container.text(timeString);
+};
 
 //grid: Array > Arrays (Rows) > Objects (Cells)
 function Board(){
@@ -42,6 +81,7 @@ function Board(){
 	this.placeMines();
 	this.printBoard();
 	this.calcMineAdj();
+	new Timer($('.timer'));
 }
 
 var victory = function(){
@@ -53,6 +93,8 @@ var defeat = function(){
 	$('.screen').show();
 	$('.splash.blown-up').show();
 };
+
+
 
 //Returns a cell object from the grid
 Board.prototype.getCell = function(x, y){
@@ -220,6 +262,10 @@ Board.prototype.validate = function(){
 
 
 board = new Board();
+timer = new Timer($('.timer'));
+setInterval(function(){
+	timer.updateTime();
+}, 1000);
 
 //If the cheat button is clicked, show the mines on the board
 $('.cheat').on('click',function(){
