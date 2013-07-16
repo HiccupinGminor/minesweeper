@@ -44,6 +44,15 @@ function Board(){
 	this.calcMineAdj();
 }
 
+var victory = function(){
+	$('.screen').show();
+	$('.splash.victory').show();
+};
+
+var defeat = function(){
+	$('.screen').show();
+	$('.splash.blown-up').show();
+};
 
 //Returns a cell object from the grid
 Board.prototype.getCell = function(x, y){
@@ -191,8 +200,7 @@ Board.prototype.clickCell = function(jThis){
 	this.revealCell(cell);
 	//Mine has been clicked on
 	if(cell["isMined"]){
-		alert("You blew up!");
-		location.reload();
+		defeat();
 	}
 };
 
@@ -204,17 +212,17 @@ Board.prototype.validate = function(){
 		}
 	}
 	if(count >= (Config.numRows * Config.numCols) - Config.numMines){
-		alert("You are correct! You win!");
+		victory();
 	}
 	else alert("Sorry, you are incorrect.");
-
-	location.reload();
+		defeat();
 };
+
 
 board = new Board();
 
 //If the cheat button is clicked, show the mines on the board
-$('#cheat').on('click',function(){
+$('.cheat').on('click',function(){
 	board.showMines();
 });
 
@@ -223,11 +231,11 @@ $('.board li').on('click',function(){
 	board.clickCell(jThis);
 });
 
-$('#new-game').on('click',function(){
+$('.new-game').on('click',function(){
 	location.reload();
 });
 
-$('#validate').on('click',function(){
+$('.validate').on('click',function(){
 	board.validate();
 });
 
