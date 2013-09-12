@@ -3,7 +3,7 @@ HTML/jQuery Minesweeper
 
 Play here: http://www.chrischung.me/minesweeper
 
-Tested successfully in IE 7+
+Tested successfully in IE 8+
 
 Enjoy!
 
