@@ -1,11 +1,3 @@
-/*
-Create a grid which can record the value of each cell and can be referenced (array). This will be used for comparisons
-Draw the cells by iterating through rows and columns.
-Update the grid with locations of mines
-Update the grid with 
-A click reveals a cell. Processes
-*/
-
 $(document).ready(function(){
 
 var Config = {
@@ -23,43 +15,50 @@ function Cell(x, y){
 	this.adjMines = 0;
 }
 
-function Timer(container){	
-	this.container = container;
-	this.seconds = 0;
-	this.minutes = 0;
-	this.hours = 0;
-	console.log(this.container);
-}
+var Timer = {	
+	container : $('.timer, .time-stamp'),
+	seconds : 0,
+	minutes : 16,
+	hours : 0,
+	ivId: 0,
+	start: function(){
+		var timer = this;
+		timer.ivId = window.setInterval( function(){
+			timer.updateTime();
+		}, 1000 );	
+	},
+	stop: function(){
+		var timer = this;
+		window.clearInterval(timer.ivId);
+	},
+	updateTime: function(){
+		this.seconds++;
+		if(this.seconds == 60){
+			this.seconds = 0;
+			this.minutes+= 1;
+		}
+		if(this.minutes == 60){
+			this.minutes = 0;
+			this.hours+= 1; 
+		}
+		this.printTime();
+	},
+	printTime: function(){
+		var timeString = this.hours + ":";
+		//Add another zero for format's sake
+		if(this.minutes < 10){
+			timeString += "0";	
+		}
+		timeString += this.minutes + ":";
 
-Timer.prototype.updateTime = function(){
-	this.seconds++;
-	console.log(this.seconds);
-	if(this.seconds == 60){
-		this.seconds = 0;
-		this.minutes++
+		if(this.seconds < 10){
+			timeString += "0";	
+		}
+
+		timeString += this.seconds;
+
+		this.container.text(timeString);
 	}
-	if(this.minutes == 60){
-		this.minutes = 0;
-		this.hours++; 
-	}
-	this.printTime();
-};
-
-Timer.prototype.printTime = function(){
-	var timeString = this.hours + ":";
-	//Add another zero for format's sake
-	if(this.minutes < 60){
-		timeString += "0";	
-	}
-	timeString += this.minutes + ":";
-
-	if(this.seconds < 10){
-		timeString += "0";	
-	}
-
-	timeString += this.seconds;
-
-	this.container.text(timeString);
 };
 
 //grid: Array > Arrays (Rows) > Objects (Cells)
@@ -81,15 +80,17 @@ function Board(){
 	this.placeMines();
 	this.printBoard();
 	this.calcMineAdj();
-	new Timer($('.timer'));
+	Timer.printTime();
 }
 
 var victory = function(){
+	Timer.stop();
 	$('.screen').show();
 	$('.splash.victory').show();
 };
 
 var defeat = function(){
+	Timer.stop();
 	$('.screen').show();
 	$('.splash.blown-up').show();
 };
@@ -99,7 +100,7 @@ var defeat = function(){
 //Returns a cell object from the grid
 Board.prototype.getCell = function(x, y){
     for(var i = 0; i < this.grid.length; i++ ) {
-        if(this.grid[i]["x"] === x && this.grid[i]["y"] === y) {
+        if(this.grid[i].x === x && this.grid[i].y === y) {
             return this.grid[i];
         }
     }
@@ -116,9 +117,9 @@ Board.prototype.placeMines = function(){
 		var thisCell = this.getCell(randomCol, randomRow);
 
 		//If the mine position isn't in array of mine positions
-		if(thisCell["isMined"] === false){
+		if(thisCell.isMined === false){
 			//Changed to isMined
-			thisCell["isMined"] = true;
+			thisCell.isMined = true;
 			this.placedMines.push(thisCell);
 		}
 	}
@@ -139,8 +140,8 @@ Board.prototype.printBoard = function(){
 		//Add cells from the grid
 		for( var i = 0; i < this.grid.length; i++){
 			//If the cell is in the same row
-			if(y == this.grid[i]["y"]){
-				$('ul.row[data-y = '+ y +']').append('<li data-x=' + this.grid[i]["x"] + ' data-y=' + this.grid[i]["y"] + ' ></li>');
+			if(y == this.grid[i].y){
+				$('ul.row[data-y = '+ y +']').append('<li data-x=' + this.grid[i].x + ' data-y=' + this.grid[i].y + ' ></li>');
 			}
 		}
 	}
@@ -163,8 +164,8 @@ Board.prototype.cellExists = function(x, y){
 
 //Checks which adjacent cells exist and returns an array
 Board.prototype.whichNeighborsExist = function(cell){
-	x = cell["x"];
-	y = cell["y"];
+	x = cell.x;
+	y = cell.y;
 	var toCount = [];
 	var toVerify = [[(x-1), y], [(x-1), (y+1)], [x, (y+1)], [(x+1), (y+1)], [(x+1), y], [(x+1), (y-1)], [x, (y-1)], [(x-1), (y-1)]];
 	//Check each of the cells to make sure that it exists on the board
@@ -187,11 +188,11 @@ Board.prototype.countAdjMines = function(cell){
 		x = toCount[i][0];
 		y = toCount[i][1];
 		//If the cell is mined, it should be added to the count
-		if(this.getCell(x, y)["isMined"]){
+		if(this.getCell(x, y).isMined){
 			count ++ ;
 		}
 	}
-	cell["adjMines"] = count;
+	cell.adjMines = count;
 };
 
 Board.prototype.showMines = function(){
@@ -204,19 +205,19 @@ Board.prototype.showMines = function(){
 //Checks the contents of the cell object and reveals them on the board
 Board.prototype.revealCell = function(cell){
 	//If the cell hasn't been revealed
-	if(!cell["isRevealed"]){
+	if(!cell.isRevealed){
 		//The cell is still hidden, check it	
-		cell["isRevealed"] = true;
-		var physicalCell = $('.board li[data-y = '+ cell["y"] +'][data-x = '+ cell["x"] + ']');
-		if(cell["isMined"] === true){
+		cell.isRevealed = true;
+		var physicalCell = $('.board li[data-y = '+ cell.y +'][data-x = '+ cell.x + ']');
+		if(cell.isMined === true){
 			physicalCell.addClass("mine");
 		}
-		else if(cell["adjMines"] === 0){
+		else if(cell.adjMines === 0){
 			physicalCell.addClass("cleared");
 			this.revealAdj(cell);
 		}
 		else{
-			physicalCell.text(cell["adjMines"]).addClass("border");
+			physicalCell.text(cell.adjMines).addClass("border");
 		}
 	}
 };
@@ -241,7 +242,7 @@ Board.prototype.clickCell = function(jThis){
 	var cell = this.getCell(guessX, guessY);
 	this.revealCell(cell);
 	//Mine has been clicked on
-	if(cell["isMined"]){
+	if(cell.isMined){
 		defeat();
 	}
 };
@@ -249,40 +250,41 @@ Board.prototype.clickCell = function(jThis){
 Board.prototype.validate = function(){
 	var count = 0;
 	for(var i = 0; i < this.grid.length; i++){
-		if(this.grid[i]["isRevealed"] && !this.grid[i]["isMined"]){
+		if(this.grid[i].isRevealed && !this.grid[i].isMined){
 			count ++;
 		}
 	}
 	if(count >= (Config.numRows * Config.numCols) - Config.numMines){
 		victory();
 	}
-	else alert("Sorry, you are incorrect.");
-		defeat();
+	else defeat();
 };
 
 
-board = new Board();
-timer = new Timer($('.timer'));
-setInterval(function(){
-	timer.updateTime();
-}, 1000);
+	board = new Board();
 
-//If the cheat button is clicked, show the mines on the board
-$('.cheat').on('click',function(){
-	board.showMines();
-});
+	$('.board li').click(function(){
+		if(Timer.ivId === 0){
+			Timer.start();
+		}
+	});
 
-$('.board li').on('click',function(){
-	var jThis = $(this);
-	board.clickCell(jThis);
-});
+	//If the cheat button is clicked, show the mines on the board
+	$('.cheat').on('click',function(){
+		board.showMines();
+	});
 
-$('.new-game').on('click',function(){
-	location.reload();
-});
+	$('.board li').on('click',function(){
+		var jThis = $(this);
+		board.clickCell(jThis);
+	});
 
-$('.validate').on('click',function(){
-	board.validate();
-});
+	$('.new-game').on('click',function(){
+		location.reload();
+	});
+
+	$('.validate').on('click',function(){
+		board.validate();
+	});
 
 });

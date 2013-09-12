@@ -97,7 +97,7 @@ button{
 	
 	background-color:#000;
 	color:#FFF;	
-	padding:.8em;
+	padding:.7em;
 	font-family:courier, Helvetica, arial, sans-serif;
 	width:70px;
 	height:17px;
@@ -106,6 +106,14 @@ button{
 	border-top-color:#444;
 	text-align:center;
 	border-radius:18px;
+}
+.time-stamp{
+	text-align: center;
+	margin: 1em auto;
+	border:1px solid #EEE;
+	background-color: #FCFCFC;
+	padding:.25em;
+	border-radius: 3px
 }
 .intro{
 	background-color: #FFF;
@@ -143,6 +151,7 @@ button{
 	top:50%;
 	left:50%;
 	margin-left:-150px;
+	margin-top:-300px;
 	display:none;
 }
 .image{
@@ -173,7 +182,6 @@ button{
 	-webkit-box-shadow: 0 0 3px #AAA;
 	-moz-box-shadow: 0 0 3px #AAA;
 	box-shadow: 0 0 3px #AAA;	
-
 }
 .screen{
 	position:fixed;
