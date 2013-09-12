@@ -18,7 +18,7 @@ function Cell(x, y){
 var Timer = {	
 	container : $('.timer, .time-stamp'),
 	seconds : 0,
-	minutes : 16,
+	minutes : 0,
 	hours : 0,
 	ivId: 0,
 	start: function(){
